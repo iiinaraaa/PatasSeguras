@@ -1,46 +1,38 @@
-# Plataforma de Proteção Animal — Monorepo
+# 🐾 Patas Seguras
 
-## Estrutura
+> Plataforma gratuita de proteção animal — ajudando tutores, ONGs e protetores independentes a cuidar, identificar e reencontrar animais.
 
-```
-pets-platform/
-├── apps/
-│   ├── api/     # Backend NestJS + Prisma + PostgreSQL
-│   └── web/     # Frontend Next.js (placeholder — Etapa 6)
-├── package.json # workspaces raiz
-```
+![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![NestJS](https://img.shields.io/badge/NestJS-E0234E?logo=nestjs&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
 
-## Etapa atual: Fundação (Auth + Banco de Dados)
+---
 
-Esta etapa entrega:
-- Schema completo do Prisma (usuários, pets, histórico médico, vacinas, QR codes, sessões, tokens)
-- Esqueleto do módulo de autenticação em NestJS (estrutura, DTOs, guards, validação)
-- Configuração de segurança base (Helmet, CORS, cookies, rate limiting)
+## Sobre o projeto
 
-A lógica completa de cada endpoint de autenticação (registro, confirmação de e-mail,
-login, refresh, esqueci senha) será implementada na próxima etapa, para manter os
-commits pequenos e revisáveis.
+Todo pet merece um caminho de volta para casa. O **Patas Seguras** permite que qualquer tutor cadastre seus animais gratuitamente, gere um **QR Code exclusivo** para a coleira, e mantenha um perfil público seguro — sem nunca expor dados sensíveis como endereço ou documentos.
 
-## Como rodar (quando os pacotes forem instalados)
+Se o pet se perder, qualquer pessoa que o encontrar pode escanear o QR Code e acessar imediatamente um contato de WhatsApp, informações médicas relevantes e a cidade do tutor.
 
-```bash
-# na raiz
-npm install
+## Funcionalidades
 
-# configurar variáveis de ambiente
-cp apps/api/.env.example apps/api/.env
-# editar apps/api/.env com sua DATABASE_URL, JWT_SECRET, etc.
+-  **Autenticação seguindo boas práticas de segurança** — senhas com Argon2, tokens JWT rotativos, confirmação de e-mail, recuperação de senha
+-  **Cadastro completo de pets** — dados médicos, vacinas, alergias, contato
+-  **QR Code único por pet** — nunca armazena dados do animal, só um identificador opaco
+-  **Página pública configurável** — o tutor escolhe exatamente o que fica visível
+-  **100% responsivo**, pensado para uso no celular
 
-# gerar client do Prisma e rodar migration inicial
-npm run prisma:generate
-npm run prisma:migrate
+##  Tecnologias
 
-# subir a API em modo dev
-npm run dev:api
-```
+| Camada | Stack |
+|---|---|
+| Frontend | React + TypeScript + Vite + Tailwind CSS |
+| Backend | NestJS + TypeScript |
+| Banco de dados | PostgreSQL + Prisma ORM |
+| E-mail transacional | Resend |
+| Autenticação | JWT (access + refresh token rotativo), Argon2id |
 
-## Próximos passos (Etapa 2)
-- Implementar lógica de registro + envio de e-mail de confirmação (Resend)
-- Implementar login com JWT (access + refresh token rotativo)
-- Implementar fluxo de "esqueci minha senha"
-- Testes unitários do módulo de auth
+Este projeto é open-source, inspirado no espírito colaborativo de pessoas como Linus Torvalds que mostraram que ferramentas gratuitas e abertas podem mudar o mundo.
