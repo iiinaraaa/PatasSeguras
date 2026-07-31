@@ -59,10 +59,12 @@ export class AuthService {
         fullName: dto.fullName,
         email: dto.email,
         passwordHash,
+        emailVerified: true, // TODO: reativar exigência de confirmação de e-mail antes de lançar publicamente
       },
     });
 
-    await this.issueEmailConfirmation(user.id, user.email, user.fullName);
+    // Confirmação de e-mail temporariamente desativada — ver TODO acima
+    // await this.issueEmailConfirmation(user.id, user.email, user.fullName);
 
     return {
       message: 'Conta criada. Verifique seu e-mail para confirmar o cadastro.',
@@ -85,9 +87,9 @@ export class AuthService {
       throw invalidCredentialsError;
     }
 
-    if (!user.emailVerified) {
-      throw new ForbiddenException('Confirme seu e-mail antes de entrar.');
-    }
+    // if (!user.emailVerified) {
+    //   throw new ForbiddenException('Confirme seu e-mail antes de entrar.');
+    // }
 
     const tokens = await this.issueTokenPair(user.id, user.email, dto.rememberMe);
 
