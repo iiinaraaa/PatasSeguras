@@ -1,0 +1,231 @@
+// Schema do banco de dados — Plataforma de Proteção Animal
+// PostgreSQL + Prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// USUÁRIOS E AUTENTICAÇÃO
+// ==========================================
+
+model User {
+  id            String   @id @default(uuid())
+  fullName      String
+  email         String   @unique
+  passwordHash  String
+  emailVerified Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  pets                   Pet[]
+  refreshTokens          RefreshToken[]
+  emailConfirmationTokens EmailConfirmationToken[]
+  passwordResetTokens    PasswordResetToken[]
+
+  @@map("users")
+}
+
+// Sessões / refresh tokens — cada linha representa uma sessão ativa
+// (permite logout remoto, "sair de todos os dispositivos", etc.)
+model RefreshToken {
+  id         String    @id @default(uuid())
+  tokenHash  String    @unique // nunca armazenar o token em texto puro
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent  String?
+  ipAddress  String?
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model EmailConfirmationToken {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("email_confirmation_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+// ==========================================
+// PETS
+// ==========================================
+
+enum PetSpecies {
+  DOG
+  CAT
+  OTHER
+}
+
+enum PetSex {
+  MALE
+  FEMALE
+  UNKNOWN
+}
+
+enum PetSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+model Pet {
+  id            String     @id @default(uuid())
+  ownerId       String
+  owner         User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  name          String
+  species       PetSpecies
+  breed         String?
+  sex           PetSex
+  color         String?
+  size          PetSize?
+  weightKg      Float?
+  birthDate     DateTime?
+  isNeutered    Boolean    @default(false)
+  microchipCode String?
+  city          String?
+  state         String?
+  photoUrl      String?
+
+  // contato exibido na página pública (sujeito às flags de PetVisibilitySettings)
+  contactPhone    String?
+  contactWhatsapp String?
+  contactEmail    String?
+
+  behaviorNotes String?
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  medicalRecords MedicalRecord[]
+  vaccines       Vaccine[]
+  qrCode         QRCode?
+  visibility     PetVisibilitySettings?
+  lostStatus     LostStatus?
+
+  @@index([ownerId])
+  @@map("pets")
+}
+
+// Controla quais campos aparecem na página pública do QR Code.
+// Mantido em tabela separada para não poluir o modelo Pet com dezenas de booleanos.
+model PetVisibilitySettings {
+  id      String @id @default(uuid())
+  petId   String @unique
+  pet     Pet    @relation(fields: [petId], references: [id], onDelete: Cascade)
+
+  showPhoto           Boolean @default(true)
+  showCity            Boolean @default(true)
+  showPhone           Boolean @default(false)
+  showWhatsapp        Boolean @default(true)
+  showEmail           Boolean @default(false)
+  showMedications     Boolean @default(true)
+  showAllergies       Boolean @default(true)
+  showBehaviorNotes   Boolean @default(false)
+  showDiseases        Boolean @default(false)
+
+  @@map("pet_visibility_settings")
+}
+
+// ==========================================
+// HISTÓRICO MÉDICO
+// ==========================================
+
+enum MedicalRecordType {
+  MEDICATION
+  DISEASE
+  ALLERGY
+  NOTE
+}
+
+model MedicalRecord {
+  id        String            @id @default(uuid())
+  petId     String
+  pet       Pet               @relation(fields: [petId], references: [id], onDelete: Cascade)
+  type      MedicalRecordType
+  title     String
+  details   String?
+  isPublic  Boolean           @default(false)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@index([petId])
+  @@map("medical_records")
+}
+
+model Vaccine {
+  id          String    @id @default(uuid())
+  petId       String
+  pet         Pet       @relation(fields: [petId], references: [id], onDelete: Cascade)
+  name        String
+  appliedAt   DateTime
+  nextDoseAt  DateTime?
+  isPublic    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+
+  @@index([petId])
+  @@map("vaccines")
+}
+
+// ==========================================
+// QR CODE
+// ==========================================
+
+model QRCode {
+  id        String   @id @default(uuid())
+  petId     String   @unique
+  pet       Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
+  // slug curto e aleatório usado na URL pública: meupet.app/p/{slug}
+  // nunca contém dados do animal, apenas um identificador opaco
+  slug      String   @unique
+  createdAt DateTime @default(now())
+
+  @@map("qr_codes")
+}
+
+// ==========================================
+// STATUS "PERDIDO"
+// ==========================================
+
+model LostStatus {
+  id                String    @id @default(uuid())
+  petId             String    @unique
+  pet               Pet       @relation(fields: [petId], references: [id], onDelete: Cascade)
+  isLost            Boolean   @default(true)
+  lostAt            DateTime  @default(now())
+  lastSeenLocation  String?
+  notes             String?
+  foundAt           DateTime?
+
+  @@map("lost_status")
+}

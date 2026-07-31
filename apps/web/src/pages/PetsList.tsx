@@ -1,0 +1,73 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Plus, Dog, Cat, PawPrint, CircleCheck } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { listPets, type Pet } from "../lib/pets";
+
+const speciesIcon = { DOG: Dog, CAT: Cat, OTHER: PawPrint };
+
+export default function PetsList() {
+  const { accessToken } = useAuth();
+  const [pets, setPets] = useState<Pet[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!accessToken) return;
+    listPets(accessToken)
+      .then(setPets)
+      .catch((err) => setError(err instanceof Error ? err.message : "Erro ao carregar pets"))
+      .finally(() => setLoading(false));
+  }, [accessToken]);
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-7">
+        <div>
+          <h1 className="text-2xl font-medium mb-1">Meus Pets</h1>
+          <p className="text-sm text-gray-500">
+            {loading ? "Carregando..." : `${pets.length} pet${pets.length === 1 ? "" : "s"} cadastrado${pets.length === 1 ? "" : "s"}`}
+          </p>
+        </div>
+        <Link
+          to="/dashboard/pets/novo"
+          className="bg-brand-600 text-white font-medium h-10 px-5 rounded-full flex items-center gap-1.5 text-sm hover:bg-brand-800 transition"
+        >
+          <Plus size={16} />
+          Cadastrar pet
+        </Link>
+      </div>
+
+      {error && <div className="bg-red-50 text-red-800 text-sm rounded-xl px-4 py-3 mb-4">{error}</div>}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {pets.map((pet) => {
+          const Icon = speciesIcon[pet.species];
+          return (
+            <div key={pet.id} className="bg-white border border-gray-200 rounded-2xl p-4">
+              <div className="w-11 h-11 rounded-[65%_35%_40%_60%/50%_45%_55%_50%] bg-orange-50 flex items-center justify-center mb-3">
+                <Icon size={22} className="text-orange-700" />
+              </div>
+              <p className="font-medium text-sm mb-0.5">{pet.name}</p>
+              <p className="text-xs text-gray-400 mb-2.5">
+                {[pet.breed, pet.city].filter(Boolean).join(" · ") || "Sem detalhes"}
+              </p>
+              <div className="flex items-center gap-1.5 text-xs text-brand-800">
+                <CircleCheck size={13} />
+                Ativo
+              </div>
+            </div>
+          );
+        })}
+
+        <Link
+          to="/dashboard/pets/novo"
+          className="border border-dashed border-gray-300 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 text-gray-400 hover:text-gray-600 hover:border-gray-400 transition min-h-[140px]"
+        >
+          <Plus size={22} />
+          <p className="text-sm">Cadastrar novo pet</p>
+        </Link>
+      </div>
+    </div>
+  );
+}
