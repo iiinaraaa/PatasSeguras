@@ -34,5 +34,3 @@ Se o pet se perder, qualquer pessoa que o encontrar pode escanear o QR Code e ac
 | Banco de dados | PostgreSQL + Prisma ORM |
 | E-mail transacional | Resend |
 | Autenticação | JWT (access + refresh token rotativo), Argon2id |
-
-Este projeto é open-source, inspirado no espírito colaborativo de pessoas como Linus Torvalds que mostraram que ferramentas gratuitas e abertas podem mudar o mundo.
