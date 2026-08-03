@@ -7,6 +7,7 @@ import { EmailModule } from './modules/email/email.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PetsModule } from './modules/pets/pets.module';
 import { PublicModule } from './modules/public/public.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { PublicModule } from './modules/public/public.module';
     AuthModule,
     PetsModule,
     PublicModule,
+    UsersModule,
   ],
   providers: [
     {

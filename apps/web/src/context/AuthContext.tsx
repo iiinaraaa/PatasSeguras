@@ -1,10 +1,11 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from "react";
 import { apiFetch } from "../lib/api";
 
 interface User {
   id: string;
   fullName: string;
   email: string;
+  photoUrl?: string | null;
 }
 
 interface AuthContextType {
@@ -14,6 +15,7 @@ interface AuthContextType {
   login: (email: string, password: string, rememberMe: boolean) => Promise<void>;
   register: (fullName: string, email: string, password: string, confirmPassword: string) => Promise<void>;
   logout: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,9 +25,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Evita disparar /auth/refresh duas vezes em paralelo (ex: dupla invocação do
+  // useEffect pelo StrictMode em dev). Como o refresh token é rotativo, uma segunda
+  // chamada concorrente usaria o token já invalidado pela primeira e voltaria 401,
+  // podendo derrubar a sessão mesmo com o refresh original tendo funcionado.
+  const refreshRequestRef = useRef<ReturnType<typeof apiFetch> | null>(null);
+
+  function refreshSession() {
+    if (!refreshRequestRef.current) {
+      refreshRequestRef.current = apiFetch("/auth/refresh", { method: "POST" }).finally(() => {
+        refreshRequestRef.current = null;
+      });
+    }
+    return refreshRequestRef.current;
+  }
+
   useEffect(() => {
-    apiFetch("/auth/refresh", { method: "POST" })
-      .then((data) => setAccessToken(data.accessToken))
+    refreshSession()
+      .then(async (data) => {
+        setAccessToken(data.accessToken);
+        const profile = await apiFetch("/users/me", {
+          headers: { Authorization: `Bearer ${data.accessToken}` },
+        });
+        setUser(profile);
+      })
       .catch(() => setAccessToken(null))
       .finally(() => setLoading(false));
   }, []);
@@ -36,7 +59,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       body: JSON.stringify({ email, password, rememberMe }),
     });
     setAccessToken(data.accessToken);
-    setUser(data.user);
+    const profile = await apiFetch("/users/me", {
+      headers: { Authorization: `Bearer ${data.accessToken}` },
+    });
+    setUser(profile);
   }
 
   async function register(fullName: string, email: string, password: string, confirmPassword: string) {
@@ -52,8 +78,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }
 
+  async function refreshProfile() {
+    if (!accessToken) return;
+    const profile = await apiFetch("/users/me", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    setUser(profile);
+  }
+
   return (
-    <AuthContext.Provider value={{ user, accessToken, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, accessToken, loading, login, register, logout, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );

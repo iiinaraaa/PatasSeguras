@@ -8,6 +8,7 @@ import DashboardLayout from "./components/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import PetsList from "./pages/PetsList";
 import CreatePet from "./pages/CreatePet";
+import Account from './pages/Account';
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
             <Route index element={<Dashboard />} />
             <Route path="pets" element={<PetsList />} />
             <Route path="pets/novo" element={<CreatePet />} />
+            <Route path="conta" element={<Account />} />
           </Route>
         </Routes>
       </BrowserRouter>

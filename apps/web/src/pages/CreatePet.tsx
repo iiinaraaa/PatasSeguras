@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { createPet } from "../lib/pets";
+import { uploadImage } from "../lib/cloudinary";
 
 export default function CreatePet() {
   const { accessToken } = useAuth();
@@ -13,12 +14,28 @@ export default function CreatePet() {
     sex: "MALE",
     city: "",
     state: "",
+    photoUrl: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   function update(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
+  }
+
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const url = await uploadImage(file);
+      update("photoUrl", url);
+    } catch {
+      setError("Erro ao enviar foto");
+    } finally {
+      setUploading(false);
+    }
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -44,6 +61,23 @@ export default function CreatePet() {
       {error && <div className="bg-red-50 text-red-800 text-sm rounded-xl px-4 py-3 mb-4">{error}</div>}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div>
+          <label className="text-sm font-medium block mb-1.5">Foto</label>
+          <div className="flex items-center gap-3">
+            <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center overflow-hidden">
+              {form.photoUrl ? (
+                <img src={form.photoUrl} alt="Foto do pet" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-xs text-gray-400">Sem foto</span>
+              )}
+            </div>
+            <label className="text-sm font-medium text-brand-600 cursor-pointer hover:text-brand-800">
+              {uploading ? "Enviando..." : "Escolher foto"}
+              <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} disabled={uploading} />
+            </label>
+          </div>
+        </div>
+
         <div>
           <label className="text-sm font-medium block mb-1.5">Nome</label>
           <input
