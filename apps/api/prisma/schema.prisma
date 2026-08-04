@@ -115,12 +115,17 @@ model Pet {
   microchipCode String?
   city          String?
   state         String?
+  neighborhood  String?
+  number        String?
+  complement    String?
+  addressNotes  String?
   photoUrl      String?
 
   // contato exibido na página pública (sujeito às flags de PetVisibilitySettings)
-  contactPhone    String?
-  contactWhatsapp String?
-  contactEmail    String?
+  contactPhone     String?
+  contactWhatsapp  String?
+  contactEmail     String?
+  contactInstagram String?
 
   behaviorNotes String?
 
@@ -147,9 +152,10 @@ model PetVisibilitySettings {
 
   showPhoto           Boolean @default(true)
   showCity            Boolean @default(true)
-  showPhone           Boolean @default(false)
+  showPhone           Boolean @default(true)
   showWhatsapp        Boolean @default(true)
   showEmail           Boolean @default(false)
+  showInstagram       Boolean @default(true)
   showMedications     Boolean @default(true)
   showAllergies       Boolean @default(true)
   showBehaviorNotes   Boolean @default(false)

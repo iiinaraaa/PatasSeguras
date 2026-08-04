@@ -17,10 +17,15 @@ export const createPetSchema = z.object({
   microchipCode: z.string().max(40).optional(),
   city: z.string().max(80).optional(),
   state: z.string().max(2).optional(),
+  neighborhood: z.string().max(80).optional(),
+  number: z.string().max(20).optional(),
+  complement: z.string().max(80).optional(),
+  addressNotes: z.string().max(500).optional(),
   photoUrl: z.string().url('URL de foto inválida').optional(),
   contactPhone: z.string().max(20).optional(),
   contactWhatsapp: z.string().max(20).optional(),
   contactEmail: z.string().email('E-mail de contato inválido').optional(),
+  contactInstagram: z.string().max(60).optional(),
   behaviorNotes: z.string().max(500).optional(),
 });
 

@@ -43,20 +43,31 @@ export default function PetsList() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {pets.map((pet) => {
           const Icon = speciesIcon[pet.species];
+          const location = [pet.neighborhood, pet.city && pet.state ? `${pet.city} - ${pet.state}` : pet.city]
+            .filter(Boolean)
+            .join(", ");
           return (
-            <div key={pet.id} className="bg-white border border-gray-200 rounded-2xl p-4">
-              <div className="w-11 h-11 rounded-[65%_35%_40%_60%/50%_45%_55%_50%] bg-orange-50 flex items-center justify-center mb-3">
-                <Icon size={22} className="text-orange-700" />
+            <Link
+              key={pet.id}
+              to={`/dashboard/pets/${pet.id}`}
+              className="bg-white border border-gray-200 rounded-2xl p-4 hover:border-gray-300 transition"
+            >
+              <div className="w-11 h-11 rounded-[65%_35%_40%_60%/50%_45%_55%_50%] bg-orange-50 flex items-center justify-center mb-3 overflow-hidden">
+                {pet.photoUrl ? (
+                  <img src={pet.photoUrl} alt={pet.name} className="w-full h-full object-cover" />
+                ) : (
+                  <Icon size={22} className="text-orange-700" />
+                )}
               </div>
               <p className="font-medium text-sm mb-0.5">{pet.name}</p>
               <p className="text-xs text-gray-400 mb-2.5">
-                {[pet.breed, pet.city].filter(Boolean).join(" · ") || "Sem detalhes"}
+                {[pet.breed, location].filter(Boolean).join(" · ") || "Sem detalhes"}
               </p>
               <div className="flex items-center gap-1.5 text-xs text-brand-800">
                 <CircleCheck size={13} />
                 Ativo
               </div>
-            </div>
+            </Link>
           );
         })}
 

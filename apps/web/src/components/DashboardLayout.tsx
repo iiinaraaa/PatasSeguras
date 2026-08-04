@@ -1,12 +1,11 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Home, PawPrint, Plus, QrCode, User, LogOut } from "lucide-react";
+import { Home, PawPrint, Plus, User, LogOut } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: Home, end: true },
   { to: "/dashboard/pets", label: "Meus Pets", icon: PawPrint, end: false },
   { to: "/dashboard/pets/novo", label: "Cadastrar Pet", icon: Plus, end: false },
-  { to: "/dashboard/qrcodes", label: "Meus QR Codes", icon: QrCode, end: false },
   { to: "/dashboard/conta", label: "Minha Conta", icon: User, end: false },
 ];
 

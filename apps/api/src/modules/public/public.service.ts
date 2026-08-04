@@ -35,6 +35,7 @@ export class PublicService {
       contactPhone: visibility?.showPhone ? pet.contactPhone : null,
       contactWhatsapp: visibility?.showWhatsapp ? pet.contactWhatsapp : null,
       contactEmail: visibility?.showEmail ? pet.contactEmail : null,
+      contactInstagram: visibility?.showInstagram ? pet.contactInstagram : null,
       behaviorNotes: visibility?.showBehaviorNotes ? pet.behaviorNotes : null,
       medications: visibility?.showMedications
         ? pet.medicalRecords.filter((r) => r.type === 'MEDICATION' && r.isPublic)

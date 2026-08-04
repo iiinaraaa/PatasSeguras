@@ -103,7 +103,12 @@ export class AuthController {
     res.cookie(REFRESH_COOKIE_NAME, token, {
       httpOnly: true,
       secure: this.configService.get<string>('COOKIE_SECURE') === 'true' || isProd,
-      sameSite: 'strict',
+      // Em produção, front (Vercel) e back (Render) ficam em domínios diferentes —
+      // isso é uma requisição cross-site do ponto de vista do navegador, e só
+      // SameSite=None permite que o cookie seja enviado nesse caso (requer Secure=true,
+      // já garantido acima via isProd). Em dev, front e back são ambos "localhost"
+      // (mesmo site, independente da porta), então Lax funciona normalmente.
+      sameSite: isProd ? 'none' : 'lax',
       // restringe o cookie apenas às rotas que precisam dele
       path: '/api/v1/auth',
       expires: expiresAt,

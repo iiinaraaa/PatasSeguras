@@ -14,7 +14,14 @@ export default function CreatePet() {
     sex: "MALE",
     city: "",
     state: "",
+    neighborhood: "",
+    number: "",
+    complement: "",
+    addressNotes: "",
     photoUrl: "",
+    contactPhone: "",
+    contactWhatsapp: "",
+    contactInstagram: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,7 +51,12 @@ export default function CreatePet() {
     setError("");
     setLoading(true);
     try {
-      await createPet(accessToken, form);
+      // Campos opcionais vazios ("") são omitidos em vez de enviados — o backend
+      // valida photoUrl como URL, e uma string vazia falharia essa validação.
+      const payload = Object.fromEntries(
+        Object.entries(form).filter(([, value]) => value !== ""),
+      );
+      await createPet(accessToken, payload);
       navigate("/dashboard/pets");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao cadastrar pet");
@@ -141,6 +153,85 @@ export default function CreatePet() {
               onChange={(e) => update("state", e.target.value.toUpperCase())}
               className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
             />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="text-sm font-medium block mb-1.5">Bairro</label>
+            <input
+              value={form.neighborhood}
+              onChange={(e) => update("neighborhood", e.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium block mb-1.5">Número</label>
+            <input
+              value={form.number}
+              onChange={(e) => update("number", e.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="text-sm font-medium block mb-1.5">Complemento</label>
+          <input
+            value={form.complement}
+            onChange={(e) => update("complement", e.target.value)}
+            placeholder="Apto, bloco, ponto de referência..."
+            className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+          />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium block mb-1.5">Observação</label>
+          <textarea
+            value={form.addressNotes}
+            onChange={(e) => update("addressNotes", e.target.value)}
+            rows={3}
+            placeholder="Informações adicionais sobre o endereço..."
+            className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600 resize-none"
+          />
+        </div>
+
+        <div className="border-t border-gray-200 pt-4 mt-1">
+          <p className="text-sm font-medium mb-3">Contato</p>
+          <p className="text-xs text-gray-500 mb-3">
+            Exibido na página pública do QR Code, pra quem encontrar seu pet poder falar com você.
+          </p>
+
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="text-sm font-medium block mb-1.5">Telefone</label>
+              <input
+                value={form.contactPhone}
+                onChange={(e) => update("contactPhone", e.target.value)}
+                placeholder="(11) 99999-9999"
+                className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium block mb-1.5">WhatsApp</label>
+              <input
+                value={form.contactWhatsapp}
+                onChange={(e) => update("contactWhatsapp", e.target.value)}
+                placeholder="(11) 99999-9999"
+                className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium block mb-1.5">Instagram</label>
+              <input
+                value={form.contactInstagram}
+                onChange={(e) => update("contactInstagram", e.target.value)}
+                placeholder="@seuperfil"
+                className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+              />
+            </div>
           </div>
         </div>
 
