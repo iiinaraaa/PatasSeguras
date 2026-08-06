@@ -6,3 +6,6 @@ build/
 .env.local
 *.log
 .DS_Store
+
+# Backups locais de dados do banco — podem conter hashes de senha/token
+backup-*.json
