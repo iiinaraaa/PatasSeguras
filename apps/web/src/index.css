@@ -12,4 +12,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  /* Blobs decorativos posicionados com offsets negativos (ex: Login, Register,
+     Landing) não devem gerar scroll horizontal em telas estreitas. */
+  overflow-x: hidden;
 }

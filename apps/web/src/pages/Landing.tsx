@@ -3,47 +3,47 @@ import { ArrowRight, PawPrint, Dog, Cat, Heart, QrCode, ShieldCheck, MapPin } fr
 
 export default function Landing() {
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8">
-      <nav className="flex items-center justify-between pb-5 border-b border-gray-200 mb-12">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-[60%_40%_55%_45%/55%_45%_60%_40%] bg-brand-600 flex items-center justify-center">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <nav className="flex items-center justify-between pb-4 sm:pb-5 border-b border-gray-200 mb-8 sm:mb-12">
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="w-9 h-9 rounded-[60%_40%_55%_45%/55%_45%_60%_40%] bg-brand-600 flex items-center justify-center shrink-0">
             <PawPrint size={20} className="text-white" />
           </div>
-          <span className="font-medium text-lg">Patas Seguras</span>
+          <span className="font-medium text-lg hidden sm:inline">Patas Seguras</span>
         </div>
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
           <Link to="/login">
-            <button className="px-4 h-11 rounded-full font-medium hover:bg-gray-50 cursor-pointer">Entrar</button>
+            <button className="px-3 sm:px-4 h-11 text-sm sm:text-base rounded-full font-medium hover:bg-gray-50 cursor-pointer">Entrar</button>
           </Link>
           <Link to="/cadastro">
-            <button className="px-6 h-11 rounded-full font-medium bg-brand-600 text-white flex items-center gap-2 hover:bg-brand-800 transition cursor-pointer">
-              <ArrowRight size={16} />
+            <button className="px-4 sm:px-6 h-11 text-sm sm:text-base rounded-full font-medium bg-brand-600 text-white flex items-center gap-1.5 sm:gap-2 hover:bg-brand-800 transition cursor-pointer">
+              <ArrowRight size={16} className="hidden sm:inline" />
               Criar conta
             </button>
           </Link>
         </div>
       </nav>
 
-      <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
+      <div className="grid md:grid-cols-2 gap-10 md:gap-12 items-center mb-14 sm:mb-20">
         <div>
           <span className="inline-block bg-brand-50 text-brand-800 text-xs font-medium px-3.5 py-1.5 rounded-full mb-4">
             100% gratuito, para sempre
           </span>
-          <h1 className="text-4xl leading-tight font-medium mb-4">
+          <h1 className="text-3xl sm:text-4xl leading-tight font-medium mb-4">
             Cada pet merece um caminho de volta para casa
           </h1>
           <p className="text-gray-600 text-base leading-relaxed mb-7">
             Cadastre seus animais, gere um QR Code exclusivo e ajude tutores, ONGs e
             protetores a manter cada bichinho seguro e identificável.
           </p>
-          <div className="flex gap-3">
-            <Link to="/cadastro">
-              <button className="px-6 h-12 rounded-full font-medium bg-brand-600 text-white flex items-center gap-2 hover:bg-brand-800 transition cursor-pointer">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link to="/cadastro" className="w-full sm:w-auto">
+              <button className="w-full sm:w-auto justify-center px-6 h-12 rounded-full font-medium bg-brand-600 text-white flex items-center gap-2 hover:bg-brand-800 transition cursor-pointer">
                 <ArrowRight size={17} />
                 Criar conta
               </button>
             </Link>
-            <button className="px-6 h-12 rounded-full font-medium border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
+            <button className="w-full sm:w-auto px-6 h-12 rounded-full font-medium border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
               Como funciona
             </button>
           </div>

@@ -105,17 +105,17 @@ export default function PetDetail() {
                 <QRCodeCanvas value={publicUrl} size={160} />
               </div>
               <p className="text-xs text-gray-400 mb-4 max-w-[180px] break-all">{publicUrl}</p>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap justify-center gap-2">
                 <button
                   onClick={handleDownload}
-                  className="flex items-center gap-1.5 text-sm font-medium bg-brand-600 text-white h-10 px-4 rounded-full cursor-pointer hover:bg-brand-800 transition"
+                  className="flex items-center gap-1.5 text-sm font-medium bg-brand-600 text-white h-11 px-4 rounded-full cursor-pointer hover:bg-brand-800 transition"
                 >
                   <Download size={15} />
                   Baixar
                 </button>
                 <button
                   onClick={() => window.print()}
-                  className="flex items-center gap-1.5 text-sm font-medium border border-gray-300 h-10 px-4 rounded-full cursor-pointer hover:bg-gray-50 transition"
+                  className="flex items-center gap-1.5 text-sm font-medium border border-gray-300 h-11 px-4 rounded-full cursor-pointer hover:bg-gray-50 transition"
                 >
                   <Printer size={15} />
                   Imprimir

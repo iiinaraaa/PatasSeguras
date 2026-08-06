@@ -238,7 +238,7 @@ export default function CreatePet() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-brand-600 text-white font-medium h-11 rounded-full cursor-pointer hover:bg-brand-800 transition disabled:opacity-60 mt-2"
+          className="w-full sm:w-auto bg-brand-600 text-white font-medium h-11 px-6 rounded-full cursor-pointer hover:bg-brand-800 transition disabled:opacity-60 mt-2"
         >
           {loading ? "Salvando..." : "Cadastrar pet"}
         </button>

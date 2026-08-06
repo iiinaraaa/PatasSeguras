@@ -22,7 +22,7 @@ export default function PetsList() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-7">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-7">
         <div>
           <h1 className="text-2xl font-medium mb-1">Meus Pets</h1>
           <p className="text-sm text-gray-500">
@@ -31,7 +31,7 @@ export default function PetsList() {
         </div>
         <Link
           to="/dashboard/pets/novo"
-          className="bg-brand-600 text-white font-medium h-10 px-5 rounded-full flex items-center gap-1.5 text-sm hover:bg-brand-800 transition"
+          className="bg-brand-600 text-white font-medium h-11 px-5 rounded-full flex items-center justify-center gap-1.5 text-sm hover:bg-brand-800 transition w-full sm:w-auto"
         >
           <Plus size={16} />
           Cadastrar pet

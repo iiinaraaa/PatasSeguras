@@ -84,7 +84,7 @@ export default function PublicPet() {
                   href={`https://wa.me/${pet.contactWhatsapp.replace(/\D/g, "")}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center justify-center gap-2 text-sm bg-brand-600 text-white h-10 rounded-full hover:bg-brand-800 transition"
+                  className="flex items-center justify-center gap-2 text-sm bg-brand-600 text-white h-11 rounded-full hover:bg-brand-800 transition"
                 >
                   <MessageCircle size={16} />
                   WhatsApp
@@ -93,7 +93,7 @@ export default function PublicPet() {
               {pet.contactPhone && (
                 <a
                   href={`tel:${pet.contactPhone}`}
-                  className="flex items-center justify-center gap-2 text-sm border border-gray-300 h-10 rounded-full hover:bg-gray-50 transition"
+                  className="flex items-center justify-center gap-2 text-sm border border-gray-300 h-11 rounded-full hover:bg-gray-50 transition"
                 >
                   <Phone size={16} />
                   {pet.contactPhone}
@@ -104,7 +104,7 @@ export default function PublicPet() {
                   href={`https://instagram.com/${pet.contactInstagram.replace(/^@/, "")}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center justify-center gap-2 text-sm border border-gray-300 h-10 rounded-full hover:bg-gray-50 transition"
+                  className="flex items-center justify-center gap-2 text-sm border border-gray-300 h-11 rounded-full hover:bg-gray-50 transition"
                 >
                   <AtSign size={16} />
                   {pet.contactInstagram.startsWith("@") ? pet.contactInstagram : `@${pet.contactInstagram}`}
@@ -113,7 +113,7 @@ export default function PublicPet() {
               {pet.contactEmail && (
                 <a
                   href={`mailto:${pet.contactEmail}`}
-                  className="flex items-center justify-center gap-2 text-sm border border-gray-300 h-10 rounded-full hover:bg-gray-50 transition"
+                  className="flex items-center justify-center gap-2 text-sm border border-gray-300 h-11 rounded-full hover:bg-gray-50 transition"
                 >
                   <Mail size={16} />
                   {pet.contactEmail}

@@ -118,7 +118,7 @@ export default function Account() {
         <button
           type="submit"
           disabled={saving}
-          className="bg-brand-600 text-white font-medium h-11 rounded-full cursor-pointer hover:bg-brand-800 transition disabled:opacity-60 mt-2 w-fit px-6"
+          className="bg-brand-600 text-white font-medium h-11 rounded-full cursor-pointer hover:bg-brand-800 transition disabled:opacity-60 mt-2 w-full sm:w-fit px-6"
         >
           {saving ? "Salvando..." : "Salvar alterações"}
         </button>

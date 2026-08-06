@@ -29,8 +29,8 @@ export default function Register() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-6">
-        <div className="max-w-md w-full bg-white rounded-2xl p-10 border border-gray-200 text-center">
+      <div className="min-h-screen flex items-center justify-center px-4 sm:px-6">
+        <div className="max-w-md w-full bg-white rounded-2xl p-6 sm:p-10 border border-gray-200 text-center">
           <h1 className="text-2xl font-medium mb-2">Conta criada!</h1>
           <p className="text-gray-500 text-sm">
             Enviamos um link de confirmação para <strong>{email}</strong>. Verifique sua caixa de entrada
@@ -42,11 +42,11 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-12">
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-10 sm:py-12">
       <div className="max-w-md w-full relative">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-orange-50 rounded-[55%_45%_35%_65%/45%_55%_45%_55%] -z-10" />
 
-        <div className="relative bg-white rounded-2xl p-10 border border-gray-200">
+        <div className="relative bg-white rounded-2xl p-6 sm:p-10 border border-gray-200">
           <Link to="/" className="flex items-center gap-2.5 mb-8">
             <div className="w-9 h-9 rounded-[60%_40%_55%_45%/55%_45%_60%_40%] bg-brand-600 flex items-center justify-center">
               <PawPrint size={20} className="text-white" />
@@ -84,7 +84,7 @@ export default function Register() {
                 className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
               />
             </div>
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <div>
                 <label className="text-sm font-medium block mb-1.5">Senha</label>
                 <input
