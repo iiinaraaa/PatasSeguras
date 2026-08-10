@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import FieldError from "../components/FieldError";
 import { inputClass } from "../lib/formStyles";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 interface FieldErrors {
   fullName?: string;
@@ -14,6 +15,7 @@ interface FieldErrors {
 }
 
 export default function Register() {
+  usePageTitle("Criar Conta");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

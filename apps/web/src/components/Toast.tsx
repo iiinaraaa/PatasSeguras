@@ -14,7 +14,7 @@ export default function Toast({ message, onClose, duration = 5000 }: ToastProps)
   }, [onClose, duration]);
 
   return (
-    <div className="fixed top-5 right-5 z-[60] flex items-center gap-3 bg-white border border-gray-200 rounded-2xl shadow-lg px-4 py-3 max-w-sm">
+    <div className="fixed top-5 left-5 right-5 sm:left-auto z-[60] flex items-center gap-3 bg-white border border-gray-200 rounded-2xl shadow-lg px-4 py-3 sm:max-w-sm">
       <CheckCircle2 size={20} className="text-brand-600 shrink-0" />
       <p className="text-sm font-medium flex-1">{message}</p>
       <button

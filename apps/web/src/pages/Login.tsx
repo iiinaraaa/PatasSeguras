@@ -4,6 +4,7 @@ import { PawPrint } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import FieldError from "../components/FieldError";
 import { inputClass } from "../lib/formStyles";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 interface FieldErrors {
   email?: string;
@@ -11,6 +12,7 @@ interface FieldErrors {
 }
 
 export default function Login() {
+  usePageTitle("Entrar");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);

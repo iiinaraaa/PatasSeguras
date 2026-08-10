@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Dog, Cat, PawPrint, Phone, MessageCircle, Mail, AtSign, MapPin, PawPrint as PawIcon } from "lucide-react";
 import { getPublicPet, type PublicPet as PublicPetType } from "../lib/pets";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 const speciesIcon = { DOG: Dog, CAT: Cat, OTHER: PawPrint };
 const speciesLabel = { DOG: "Cachorro", CAT: "Gato", OTHER: "Outro" };
@@ -11,6 +12,8 @@ export default function PublicPet() {
   const [pet, setPet] = useState<PublicPetType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  usePageTitle(pet?.name || "Detalhes do Pet");
 
   useEffect(() => {
     if (!slug) return;

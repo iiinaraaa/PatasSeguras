@@ -5,6 +5,7 @@ import { createPet } from "../lib/pets";
 import { uploadImage } from "../lib/cloudinary";
 import FieldError from "../components/FieldError";
 import { inputClass } from "../lib/formStyles";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 interface FieldErrors {
   name?: string;
@@ -15,6 +16,7 @@ interface FieldErrors {
 }
 
 export default function CreatePet() {
+  usePageTitle("Cadastrar Pet");
   const { accessToken } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({

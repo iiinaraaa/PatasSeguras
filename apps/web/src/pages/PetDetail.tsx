@@ -5,6 +5,7 @@ import { ArrowLeft, Dog, Cat, PawPrint, Download, Printer } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { getPet, type PetDetail as PetDetailType } from "../lib/pets";
 import LoadingState from "../components/LoadingState";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 const speciesIcon = { DOG: Dog, CAT: Cat, OTHER: PawPrint };
 const speciesLabel = { DOG: "Cachorro", CAT: "Gato", OTHER: "Outro" };
@@ -17,6 +18,8 @@ export default function PetDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const qrRef = useRef<HTMLDivElement>(null);
+
+  usePageTitle(pet?.name || "Detalhes do Pet");
 
   useEffect(() => {
     if (!accessToken || !id) return;

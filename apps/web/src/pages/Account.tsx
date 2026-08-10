@@ -3,8 +3,10 @@ import { Camera, Loader2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { uploadImage } from "../lib/cloudinary";
 import { apiFetch } from "../lib/api";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 export default function Account() {
+  usePageTitle("Minha Conta");
   const { user, accessToken, refreshProfile } = useAuth();
   const [fullName, setFullName] = useState(user?.fullName || "");
   const [uploading, setUploading] = useState(false);

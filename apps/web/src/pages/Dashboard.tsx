@@ -1,6 +1,8 @@
 import { useAuth } from "../context/AuthContext";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 export default function Dashboard() {
+  usePageTitle("Dashboard");
   const { user } = useAuth();
 
   return (

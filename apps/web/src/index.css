@@ -10,9 +10,15 @@
   --color-brand-900: #173404;
 }
 
+/* Blobs decorativos posicionados com offsets negativos (ex: Login, Register,
+   Landing) não devem gerar scroll horizontal em telas estreitas. O scroll da
+   página é controlado pelo <html>, não pelo <body> — por isso a regra precisa
+   estar nos dois; só no body não impede o html de rolar. */
+html,
+body {
+  overflow-x: hidden;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  /* Blobs decorativos posicionados com offsets negativos (ex: Login, Register,
-     Landing) não devem gerar scroll horizontal em telas estreitas. */
-  overflow-x: hidden;
 }

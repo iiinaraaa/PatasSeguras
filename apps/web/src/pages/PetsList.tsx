@@ -4,10 +4,12 @@ import { Plus, Dog, Cat, PawPrint, CircleCheck } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { listPets, type Pet } from "../lib/pets";
 import LoadingState from "../components/LoadingState";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 const speciesIcon = { DOG: Dog, CAT: Cat, OTHER: PawPrint };
 
 export default function PetsList() {
+  usePageTitle("Meus Pets");
   const { accessToken } = useAuth();
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);

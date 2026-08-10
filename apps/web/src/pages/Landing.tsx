@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, PawPrint, Dog, Cat, Heart, QrCode, ShieldCheck, MapPin } from "lucide-react";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 export default function Landing() {
+  usePageTitle("Página Inicial");
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <nav className="flex items-center justify-between pb-4 sm:pb-5 border-b border-gray-200 mb-8 sm:mb-12">
