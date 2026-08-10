@@ -56,55 +56,57 @@ export default function PetDetail() {
   ].filter(Boolean);
 
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-2xl">
       <Link to="/dashboard/pets" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 mb-6">
         <ArrowLeft size={16} />
         Voltar para Meus Pets
       </Link>
 
-      <div className="grid md:grid-cols-[1fr_auto] gap-8">
-        <div className="bg-white border border-gray-200 rounded-2xl p-6">
-          <div className="flex items-start gap-4 mb-5">
-            <div className="w-20 h-20 rounded-2xl bg-orange-50 flex items-center justify-center overflow-hidden shrink-0">
-              {pet.photoUrl ? (
-                <img src={pet.photoUrl} alt={pet.name} className="w-full h-full object-cover" />
-              ) : (
-                <Icon size={32} className="text-orange-700" />
-              )}
-            </div>
-            <div>
-              <h1 className="text-2xl font-medium mb-1">{pet.name}</h1>
-              <p className="text-sm text-gray-500">
-                {[speciesLabel[pet.species], pet.breed, sexLabel[pet.sex]].filter(Boolean).join(" · ")}
-              </p>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-100 pt-4">
-            <p className="text-sm font-medium mb-1.5">Endereço</p>
-            {addressLines.length > 0 ? (
-              addressLines.map((line, i) => (
-                <p key={i} className="text-sm text-gray-600">
-                  {line}
-                </p>
-              ))
+      <div className="bg-white border border-gray-200 rounded-2xl p-6">
+        <div className="flex items-start gap-4 mb-5">
+          <div className="w-20 h-20 rounded-2xl bg-orange-50 flex items-center justify-center overflow-hidden shrink-0">
+            {pet.photoUrl ? (
+              <img src={pet.photoUrl} alt={pet.name} className="w-full h-full object-cover" />
             ) : (
-              <p className="text-sm text-gray-400">Nenhum endereço cadastrado.</p>
+              <Icon size={32} className="text-orange-700" />
             )}
           </div>
+          <div>
+            <h1 className="text-2xl font-medium mb-1">{pet.name}</h1>
+            <p className="text-sm text-gray-500">
+              {[speciesLabel[pet.species], pet.breed, sexLabel[pet.sex]].filter(Boolean).join(" · ")}
+            </p>
+          </div>
+        </div>
 
-          {pet.addressNotes && (
-            <div className="border-t border-gray-100 pt-4 mt-4">
-              <p className="text-sm font-medium mb-1.5">Observação</p>
-              <p className="text-sm text-gray-600">{pet.addressNotes}</p>
-            </div>
+        <div className="border-t border-gray-100 pt-4">
+          <p className="text-sm font-medium mb-1.5">Endereço</p>
+          {addressLines.length > 0 ? (
+            addressLines.map((line, i) => (
+              <p key={i} className="text-sm text-gray-600">
+                {line}
+              </p>
+            ))
+          ) : (
+            <p className="text-sm text-gray-400">Nenhum endereço cadastrado.</p>
           )}
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col items-center text-center h-fit">
-          <p className="text-sm font-medium mb-3">QR Code do pet</p>
+        {pet.addressNotes && (
+          <div className="border-t border-gray-100 pt-4 mt-4">
+            <p className="text-sm font-medium mb-1.5">Observação</p>
+            <p className="text-sm text-gray-600">{pet.addressNotes}</p>
+          </div>
+        )}
+
+        <div className="border-t border-gray-100 pt-5 mt-5 flex flex-col items-center text-center">
+          <p className="text-sm font-medium mb-1">QR Code do pet</p>
           {publicUrl ? (
             <>
+              <p className="text-sm text-gray-500 mb-4 max-w-xs">
+                Imprima e cole na coleira do seu pet! Quem encontrá-lo poderá escanear e falar
+                direto com você.
+              </p>
               <div ref={qrRef} className="p-3 bg-white rounded-xl border border-gray-100 mb-4">
                 <QRCodeCanvas value={publicUrl} size={160} />
               </div>
