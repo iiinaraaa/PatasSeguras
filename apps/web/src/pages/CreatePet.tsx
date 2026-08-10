@@ -3,6 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { createPet } from "../lib/pets";
 import { uploadImage } from "../lib/cloudinary";
+import FieldError from "../components/FieldError";
+import { inputClass } from "../lib/formStyles";
+
+interface FieldErrors {
+  name?: string;
+  photoUrl?: string;
+  contactPhone?: string;
+  city?: string;
+  state?: string;
+}
 
 export default function CreatePet() {
   const { accessToken } = useAuth();
@@ -23,12 +33,14 @@ export default function CreatePet() {
     contactWhatsapp: "",
     contactInstagram: "",
   });
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
 
   function update(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
+    setFieldErrors((prev) => ({ ...prev, [field]: undefined }));
   }
 
   async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -45,10 +57,25 @@ export default function CreatePet() {
     }
   }
 
+  function validate(): FieldErrors {
+    const errors: FieldErrors = {};
+    if (!form.name.trim()) errors.name = "Informe o nome do pet.";
+    if (!form.photoUrl) errors.photoUrl = "Selecione uma foto do pet.";
+    if (!form.contactPhone.trim()) errors.contactPhone = "Informe o telefone de contato.";
+    if (!form.city.trim()) errors.city = "Informe a cidade.";
+    if (!form.state.trim()) errors.state = "Informe o estado.";
+    return errors;
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!accessToken) return;
     setError("");
+
+    const errors = validate();
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
     setLoading(true);
     try {
       // Campos opcionais vazios ("") são omitidos em vez de enviados — o backend
@@ -72,11 +99,17 @@ export default function CreatePet() {
 
       {error && <div className="bg-red-50 text-red-800 text-sm rounded-xl px-4 py-3 mb-4">{error}</div>}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
         <div>
-          <label className="text-sm font-medium block mb-1.5">Foto</label>
+          <label className="text-sm font-medium block mb-1.5">
+            Foto <span className="text-red-500">*</span>
+          </label>
           <div className="flex items-center gap-3">
-            <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center overflow-hidden">
+            <div
+              className={`w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center overflow-hidden ${
+                fieldErrors.photoUrl ? "ring-2 ring-red-500" : ""
+              }`}
+            >
               {form.photoUrl ? (
                 <img src={form.photoUrl} alt="Foto do pet" className="w-full h-full object-cover" />
               ) : (
@@ -88,16 +121,19 @@ export default function CreatePet() {
               <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} disabled={uploading} />
             </label>
           </div>
+          <FieldError message={fieldErrors.photoUrl} />
         </div>
 
         <div>
-          <label className="text-sm font-medium block mb-1.5">Nome</label>
+          <label className="text-sm font-medium block mb-1.5">
+            Nome <span className="text-red-500">*</span>
+          </label>
           <input
-            required
             value={form.name}
             onChange={(e) => update("name", e.target.value)}
-            className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+            className={inputClass(!!fieldErrors.name)}
           />
+          <FieldError message={fieldErrors.name} />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -138,21 +174,27 @@ export default function CreatePet() {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-sm font-medium block mb-1.5">Cidade</label>
+            <label className="text-sm font-medium block mb-1.5">
+              Cidade <span className="text-red-500">*</span>
+            </label>
             <input
               value={form.city}
               onChange={(e) => update("city", e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+              className={inputClass(!!fieldErrors.city)}
             />
+            <FieldError message={fieldErrors.city} />
           </div>
           <div>
-            <label className="text-sm font-medium block mb-1.5">Estado (UF)</label>
+            <label className="text-sm font-medium block mb-1.5">
+              Estado (UF) <span className="text-red-500">*</span>
+            </label>
             <input
               maxLength={2}
               value={form.state}
               onChange={(e) => update("state", e.target.value.toUpperCase())}
-              className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+              className={inputClass(!!fieldErrors.state)}
             />
+            <FieldError message={fieldErrors.state} />
           </div>
         </div>
 
@@ -204,13 +246,16 @@ export default function CreatePet() {
 
           <div className="flex flex-col gap-4">
             <div>
-              <label className="text-sm font-medium block mb-1.5">Telefone</label>
+              <label className="text-sm font-medium block mb-1.5">
+                Telefone <span className="text-red-500">*</span>
+              </label>
               <input
                 value={form.contactPhone}
                 onChange={(e) => update("contactPhone", e.target.value)}
                 placeholder="(11) 99999-9999"
-                className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+                className={inputClass(!!fieldErrors.contactPhone)}
               />
+              <FieldError message={fieldErrors.contactPhone} />
             </div>
 
             <div>

@@ -21,21 +21,6 @@ export class EmailService {
     this.frontendUrl = this.config.get<string>('FRONTEND_URL', 'http://localhost:3000');
   }
 
-  async sendEmailConfirmation(to: string, name: string, token: string) {
-    const url = `${this.frontendUrl}/confirmar-email?token=${token}`;
-
-    await this.send({
-      to,
-      subject: 'Confirme seu e-mail',
-      html: `
-        <p>Olá, ${escapeHtml(name)}!</p>
-        <p>Confirme seu e-mail para começar a usar a plataforma:</p>
-        <p><a href="${url}">Confirmar meu e-mail</a></p>
-        <p>Se você não criou essa conta, ignore esta mensagem.</p>
-      `,
-    });
-  }
-
   async sendPasswordReset(to: string, name: string, token: string) {
     const url = `${this.frontendUrl}/redefinir-senha?token=${token}`;
 

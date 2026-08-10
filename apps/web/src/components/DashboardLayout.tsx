@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Home, PawPrint, Plus, User, LogOut, Menu, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import LoadingState from "./LoadingState";
 
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: Home, end: true },
@@ -11,7 +12,7 @@ const navItems = [
 ];
 
 export default function DashboardLayout() {
-  const { logout } = useAuth();
+  const { logout, loading } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -100,7 +101,7 @@ export default function DashboardLayout() {
       </header>
 
       <main className="p-4 sm:p-6 md:p-8">
-        <Outlet />
+        {loading ? <LoadingState label="Carregando sua conta..." /> : <Outlet />}
       </main>
     </div>
   );

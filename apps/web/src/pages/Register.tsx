@@ -1,44 +1,77 @@
 import { useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PawPrint, ArrowRight } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
+import FieldError from "../components/FieldError";
+import { inputClass } from "../lib/formStyles";
+
+interface FieldErrors {
+  fullName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+}
 
 export default function Register() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
+  const { showToast } = useToast();
+  const navigate = useNavigate();
+
+  function checkPasswordsMatch(pwd: string, confirm: string) {
+    setFieldErrors((prev) => ({
+      ...prev,
+      confirmPassword: confirm && pwd !== confirm ? "As senhas não coincidem" : undefined,
+    }));
+  }
+
+  function handlePasswordChange(value: string) {
+    setPassword(value);
+    setFieldErrors((prev) => ({ ...prev, password: undefined }));
+    checkPasswordsMatch(value, confirmPassword);
+  }
+
+  function handleConfirmPasswordChange(value: string) {
+    setConfirmPassword(value);
+    checkPasswordsMatch(password, value);
+  }
+
+  function validate(): FieldErrors {
+    const errors: FieldErrors = {};
+    if (!fullName.trim()) errors.fullName = "Informe seu nome completo.";
+    if (!email.trim()) errors.email = "Informe seu e-mail.";
+    if (!password) errors.password = "Informe uma senha.";
+    else if (password.length < 8) errors.password = "A senha deve ter no mínimo 8 caracteres.";
+    if (!confirmPassword) errors.confirmPassword = "Confirme sua senha.";
+    else if (password !== confirmPassword) errors.confirmPassword = "As senhas não coincidem.";
+    return errors;
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError("");
+
+    const errors = validate();
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
     setLoading(true);
     try {
       await register(fullName, email, password, confirmPassword);
-      setSuccess(true);
+      showToast("Cadastrado com sucesso!");
+      navigate("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao criar conta");
     } finally {
       setLoading(false);
     }
-  }
-
-  if (success) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4 sm:px-6">
-        <div className="max-w-md w-full bg-white rounded-2xl p-6 sm:p-10 border border-gray-200 text-center">
-          <h1 className="text-2xl font-medium mb-2">Conta criada!</h1>
-          <p className="text-gray-500 text-sm">
-            Enviamos um link de confirmação para <strong>{email}</strong>. Verifique sua caixa de entrada
-            para ativar sua conta.
-          </p>
-        </div>
-      </div>
-    );
   }
 
   return (
@@ -61,51 +94,58 @@ export default function Register() {
             <div className="bg-red-50 text-red-800 text-sm rounded-xl px-4 py-3 mb-4">{error}</div>
           )}
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
+          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-3.5">
             <div>
               <label className="text-sm font-medium block mb-1.5">Nome completo</label>
               <input
                 type="text"
-                required
                 value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                onChange={(e) => {
+                  setFullName(e.target.value);
+                  setFieldErrors((prev) => ({ ...prev, fullName: undefined }));
+                }}
                 placeholder="Seu nome"
-                className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+                className={inputClass(!!fieldErrors.fullName)}
               />
+              <FieldError message={fieldErrors.fullName} />
             </div>
             <div>
               <label className="text-sm font-medium block mb-1.5">E-mail</label>
               <input
                 type="email"
-                required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setFieldErrors((prev) => ({ ...prev, email: undefined }));
+                }}
                 placeholder="voce@exemplo.com"
-                className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+                className={inputClass(!!fieldErrors.email)}
               />
+              <FieldError message={fieldErrors.email} />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <div>
                 <label className="text-sm font-medium block mb-1.5">Senha</label>
                 <input
                   type="password"
-                  required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => handlePasswordChange(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+                  className={inputClass(!!fieldErrors.password)}
                 />
+                <p className="text-xs text-gray-400 mt-1">Mínimo de 8 caracteres</p>
+                <FieldError message={fieldErrors.password} />
               </div>
               <div>
                 <label className="text-sm font-medium block mb-1.5">Confirmar</label>
                 <input
                   type="password"
-                  required
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => handleConfirmPasswordChange(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+                  className={inputClass(!!fieldErrors.confirmPassword)}
                 />
+                <FieldError message={fieldErrors.confirmPassword} />
               </div>
             </div>
 

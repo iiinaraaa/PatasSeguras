@@ -18,12 +18,10 @@ import {
   loginSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
-  confirmEmailSchema,
   type RegisterDto,
   type LoginDto,
   type ForgotPasswordDto,
   type ResetPasswordDto,
-  type ConfirmEmailDto,
 } from './dto/auth.schemas';
 
 const REFRESH_COOKIE_NAME = 'refresh_token';
@@ -38,8 +36,12 @@ export class AuthController {
   @Post('register')
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @UsePipes(new ZodValidationPipe(registerSchema))
-  register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
+  async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {
+    const { accessToken, refreshToken, refreshTokenExpiresAt, user } = await this.authService.register(dto);
+
+    this.setRefreshCookie(res, refreshToken, refreshTokenExpiresAt);
+
+    return { accessToken, user };
   }
 
   @Post('login')
@@ -72,13 +74,6 @@ export class AuthController {
     const rawRefreshToken = req.cookies?.[REFRESH_COOKIE_NAME];
     await this.authService.logout(rawRefreshToken);
     res.clearCookie(REFRESH_COOKIE_NAME, { path: '/api/v1/auth' });
-  }
-
-  @Post('confirm-email')
-  @UsePipes(new ZodValidationPipe(confirmEmailSchema))
-  @HttpCode(HttpStatus.OK)
-  confirmEmail(@Body() dto: ConfirmEmailDto) {
-    return this.authService.confirmEmail(dto);
   }
 
   @Post('forgot-password')

@@ -16,10 +16,8 @@ import type {
   LoginDto,
   ForgotPasswordDto,
   ResetPasswordDto,
-  ConfirmEmailDto,
 } from './dto/auth.schemas';
 
-const EMAIL_CONFIRMATION_TTL_MS = 24 * 60 * 60 * 1000; // 24h
 const PASSWORD_RESET_TTL_MS = 60 * 60 * 1000; // 1h
 const REFRESH_TOKEN_TTL_MS_DEFAULT = 7 * 24 * 60 * 60 * 1000; // 7 dias
 const REFRESH_TOKEN_TTL_MS_REMEMBER = 30 * 24 * 60 * 60 * 1000; // 30 dias
@@ -43,7 +41,7 @@ export class AuthService {
     private readonly tokensService: TokensService,
   ) {}
 
-  async register(dto: RegisterDto) {
+  async register(dto: RegisterDto): Promise<AuthTokens & { user: { id: string; fullName: string; email: string } }> {
     const existing = await this.prisma.user.findUnique({ where: { email: dto.email } });
     if (existing) {
       // Mensagem genérica de qualquer forma seria ideal contra enumeração de e-mail,
@@ -58,16 +56,15 @@ export class AuthService {
         fullName: dto.fullName,
         email: dto.email,
         passwordHash,
-        emailVerified: true, // TODO: reativar exigência de confirmação de e-mail antes de lançar publicamente
       },
     });
 
-    // Confirmação de e-mail temporariamente desativada — ver TODO acima
-    // await this.issueEmailConfirmation(user.id, user.email, user.fullName);
+    // Cadastro já autentica direto — não há mais confirmação de e-mail.
+    const tokens = await this.issueTokenPair(user.id, user.email, false);
 
     return {
-      message: 'Conta criada. Verifique seu e-mail para confirmar o cadastro.',
-      userId: user.id,
+      ...tokens,
+      user: { id: user.id, fullName: user.fullName, email: user.email },
     };
   }
 
@@ -85,10 +82,6 @@ export class AuthService {
     if (!passwordMatches) {
       throw invalidCredentialsError;
     }
-
-    // if (!user.emailVerified) {
-    //   throw new ForbiddenException('Confirme seu e-mail antes de entrar.');
-    // }
 
     const tokens = await this.issueTokenPair(user.id, user.email, dto.rememberMe);
 
@@ -133,29 +126,6 @@ export class AuthService {
       where: { tokenHash, revokedAt: null },
       data: { revokedAt: new Date() },
     });
-  }
-
-  async confirmEmail(dto: ConfirmEmailDto) {
-    const tokenHash = this.tokensService.hashToken(dto.token);
-
-    const record = await this.prisma.emailConfirmationToken.findUnique({ where: { tokenHash } });
-
-    if (!record || record.usedAt || record.expiresAt < new Date()) {
-      throw new BadRequestException('Token inválido ou expirado.');
-    }
-
-    await this.prisma.$transaction([
-      this.prisma.emailConfirmationToken.update({
-        where: { id: record.id },
-        data: { usedAt: new Date() },
-      }),
-      this.prisma.user.update({
-        where: { id: record.userId },
-        data: { emailVerified: true },
-      }),
-    ]);
-
-    return { message: 'E-mail confirmado com sucesso.' };
   }
 
   async forgotPassword(dto: ForgotPasswordDto) {
@@ -221,26 +191,6 @@ export class AuthService {
   }
 
   // ---------- helpers privados ----------
-
-  private async issueEmailConfirmation(userId: string, email: string, fullName: string) {
-    const rawToken = this.tokensService.generateOpaqueToken();
-    const tokenHash = this.tokensService.hashToken(rawToken);
-
-    await this.prisma.emailConfirmationToken.create({
-      data: {
-        tokenHash,
-        userId,
-        expiresAt: new Date(Date.now() + EMAIL_CONFIRMATION_TTL_MS),
-      },
-    });
-
-    try {
-      await this.emailService.sendEmailConfirmation(email, fullName, rawToken);
-    } catch (error) {
-      this.logger.error(`Falha ao enviar e-mail de confirmação para ${email}`, error as Error);
-      // O usuário poderá solicitar reenvio depois (endpoint futuro); não falhamos o cadastro por isso.
-    }
-  }
 
   private async issueTokenPair(userId: string, email: string, rememberMe: boolean): Promise<AuthTokens> {
     const accessToken = await this.jwtService.signAsync({ sub: userId, email });

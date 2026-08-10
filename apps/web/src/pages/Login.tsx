@@ -2,19 +2,39 @@ import { useState, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { PawPrint } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import FieldError from "../components/FieldError";
+import { inputClass } from "../lib/formStyles";
+
+interface FieldErrors {
+  email?: string;
+  password?: string;
+}
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  function validate(): FieldErrors {
+    const errors: FieldErrors = {};
+    if (!email.trim()) errors.email = "Informe seu e-mail.";
+    if (!password) errors.password = "Informe sua senha.";
+    return errors;
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError("");
+
+    const errors = validate();
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
     setLoading(true);
     try {
       await login(email, password, rememberMe);
@@ -46,28 +66,34 @@ export default function Login() {
             <div className="bg-red-50 text-red-800 text-sm rounded-xl px-4 py-3 mb-4">{error}</div>
           )}
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
+          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-3.5">
             <div>
               <label className="text-sm font-medium block mb-1.5">E-mail</label>
               <input
                 type="email"
-                required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setFieldErrors((prev) => ({ ...prev, email: undefined }));
+                }}
                 placeholder="voce@exemplo.com"
-                className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+                className={inputClass(!!fieldErrors.email)}
               />
+              <FieldError message={fieldErrors.email} />
             </div>
             <div>
               <label className="text-sm font-medium block mb-1.5">Senha</label>
               <input
                 type="password"
-                required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setFieldErrors((prev) => ({ ...prev, password: undefined }));
+                }}
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-600"
+                className={inputClass(!!fieldErrors.password)}
               />
+              <FieldError message={fieldErrors.password} />
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-2 text-sm mt-1 mb-2">

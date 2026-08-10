@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Plus, Dog, Cat, PawPrint, CircleCheck } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { listPets, type Pet } from "../lib/pets";
+import LoadingState from "../components/LoadingState";
 
 const speciesIcon = { DOG: Dog, CAT: Cat, OTHER: PawPrint };
 
@@ -25,9 +26,11 @@ export default function PetsList() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-7">
         <div>
           <h1 className="text-2xl font-medium mb-1">Meus Pets</h1>
-          <p className="text-sm text-gray-500">
-            {loading ? "Carregando..." : `${pets.length} pet${pets.length === 1 ? "" : "s"} cadastrado${pets.length === 1 ? "" : "s"}`}
-          </p>
+          {!loading && (
+            <p className="text-sm text-gray-500">
+              {pets.length} pet{pets.length === 1 ? "" : "s"} cadastrado{pets.length === 1 ? "" : "s"}
+            </p>
+          )}
         </div>
         <Link
           to="/dashboard/pets/novo"
@@ -40,6 +43,9 @@ export default function PetsList() {
 
       {error && <div className="bg-red-50 text-red-800 text-sm rounded-xl px-4 py-3 mb-4">{error}</div>}
 
+      {loading ? (
+        <LoadingState label="Carregando seus pets..." />
+      ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {pets.map((pet) => {
           const Icon = speciesIcon[pet.species];
@@ -79,6 +85,7 @@ export default function PetsList() {
           <p className="text-sm">Cadastrar novo pet</p>
         </Link>
       </div>
+      )}
     </div>
   );
 }

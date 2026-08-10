@@ -1,4 +1,4 @@
-import { ConflictException, ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 
 // Mocks simples de cada dependência — sem tocar em banco ou serviço externo real.
@@ -6,7 +6,6 @@ function buildService(overrides: Partial<Record<string, any>> = {}) {
   const prisma = {
     user: { findUnique: jest.fn(), create: jest.fn(), update: jest.fn() },
     refreshToken: { create: jest.fn(), findUnique: jest.fn(), update: jest.fn(), updateMany: jest.fn() },
-    emailConfirmationToken: { create: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
     passwordResetToken: { create: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
     $transaction: jest.fn((ops) => Promise.all(ops)),
     ...overrides.prisma,
@@ -19,7 +18,6 @@ function buildService(overrides: Partial<Record<string, any>> = {}) {
     verify: jest.fn().mockResolvedValue(true),
   };
   const emailService = {
-    sendEmailConfirmation: jest.fn().mockResolvedValue(undefined),
     sendPasswordReset: jest.fn().mockResolvedValue(undefined),
   };
   const tokensService = {
@@ -41,8 +39,8 @@ function buildService(overrides: Partial<Record<string, any>> = {}) {
 
 describe('AuthService', () => {
   describe('register', () => {
-    it('cria o usuário e envia e-mail de confirmação quando o e-mail é novo', async () => {
-      const { service, prisma, emailService } = buildService();
+    it('cria o usuário e já retorna tokens autenticados (login automático)', async () => {
+      const { service, prisma } = buildService();
       prisma.user.findUnique.mockResolvedValue(null);
       prisma.user.create.mockResolvedValue({ id: 'user-1', email: 'ana@example.com', fullName: 'Ana' });
 
@@ -54,8 +52,10 @@ describe('AuthService', () => {
       });
 
       expect(prisma.user.create).toHaveBeenCalled();
-      expect(emailService.sendEmailConfirmation).toHaveBeenCalledWith('ana@example.com', 'Ana', 'raw-token');
-      expect(result.userId).toBe('user-1');
+      expect(prisma.refreshToken.create).toHaveBeenCalled();
+      expect(result.accessToken).toBe('fake.jwt.token');
+      expect(result.refreshToken).toBe('raw-token');
+      expect(result.user).toEqual({ id: 'user-1', fullName: 'Ana', email: 'ana@example.com' });
     });
 
     it('rejeita cadastro com e-mail já existente', async () => {
@@ -90,28 +90,12 @@ describe('AuthService', () => {
         email: 'ana@example.com',
         passwordHash: 'hash',
         isActive: true,
-        emailVerified: true,
       });
       passwordService.verify.mockResolvedValue(false);
 
       await expect(
         service.login({ email: 'ana@example.com', password: 'errada', rememberMe: false }),
       ).rejects.toBeInstanceOf(UnauthorizedException);
-    });
-
-    it('rejeita login quando o e-mail ainda não foi confirmado', async () => {
-      const { service, prisma } = buildService();
-      prisma.user.findUnique.mockResolvedValue({
-        id: 'user-1',
-        email: 'ana@example.com',
-        passwordHash: 'hash',
-        isActive: true,
-        emailVerified: false,
-      });
-
-      await expect(
-        service.login({ email: 'ana@example.com', password: 'senha1234', rememberMe: false }),
-      ).rejects.toBeInstanceOf(ForbiddenException);
     });
 
     it('retorna tokens quando as credenciais são válidas', async () => {
@@ -122,7 +106,6 @@ describe('AuthService', () => {
         fullName: 'Ana',
         passwordHash: 'hash',
         isActive: true,
-        emailVerified: true,
       });
 
       const result = await service.login({

@@ -4,6 +4,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import { ArrowLeft, Dog, Cat, PawPrint, Download, Printer } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { getPet, type PetDetail as PetDetailType } from "../lib/pets";
+import LoadingState from "../components/LoadingState";
 
 const speciesIcon = { DOG: Dog, CAT: Cat, OTHER: PawPrint };
 const speciesLabel = { DOG: "Cachorro", CAT: "Gato", OTHER: "Outro" };
@@ -37,7 +38,7 @@ export default function PetDetail() {
   }
 
   if (loading) {
-    return <p className="text-gray-500">Carregando...</p>;
+    return <LoadingState label="Carregando pet..." />;
   }
 
   if (error || !pet) {

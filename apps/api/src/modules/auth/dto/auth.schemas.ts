@@ -41,12 +41,7 @@ export const resetPasswordSchema = z
     path: ['confirmPassword'],
   });
 
-export const confirmEmailSchema = z.object({
-  token: z.string().min(1),
-});
-
 export type RegisterDto = z.infer<typeof registerSchema>;
 export type LoginDto = z.infer<typeof loginSchema>;
 export type ForgotPasswordDto = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordDto = z.infer<typeof resetPasswordSchema>;
-export type ConfirmEmailDto = z.infer<typeof confirmEmailSchema>;

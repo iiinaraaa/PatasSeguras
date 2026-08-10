@@ -66,10 +66,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function register(fullName: string, email: string, password: string, confirmPassword: string) {
-    await apiFetch("/auth/register", {
+    const data = await apiFetch("/auth/register", {
       method: "POST",
       body: JSON.stringify({ fullName, email, password, confirmPassword }),
     });
+    setAccessToken(data.accessToken);
+    const profile = await apiFetch("/users/me", {
+      headers: { Authorization: `Bearer ${data.accessToken}` },
+    });
+    setUser(profile);
   }
 
   async function logout() {
