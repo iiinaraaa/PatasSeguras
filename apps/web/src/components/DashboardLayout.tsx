@@ -4,6 +4,7 @@ import { Home, PawPrint, Plus, User, LogOut, Menu, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import LoadingState from "./LoadingState";
 import InstallMenuItem from "./InstallMenuItem";
+import Footer from "./Footer";
 
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: Home, end: true },
@@ -103,8 +104,11 @@ export default function DashboardLayout() {
         <div className="w-11" aria-hidden="true" />
       </header>
 
-      <main className="p-4 sm:p-6 md:p-8">
-        {loading ? <LoadingState label="Carregando sua conta..." /> : <Outlet />}
+      <main className="p-4 sm:p-6 md:p-8 flex flex-col min-h-screen md:min-h-0">
+        <div className="flex-1">
+          {loading ? <LoadingState label="Carregando sua conta..." /> : <Outlet />}
+        </div>
+        <Footer />
       </main>
     </div>
   );

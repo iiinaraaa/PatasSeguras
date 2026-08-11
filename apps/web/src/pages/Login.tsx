@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import FieldError from "../components/FieldError";
 import { inputClass } from "../lib/formStyles";
 import { usePageTitle } from "../hooks/usePageTitle";
+import Footer from "../components/Footer";
 
 interface FieldErrors {
   email?: string;
@@ -49,7 +50,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-10 sm:py-12">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-10 sm:py-12">
       <div className="max-w-md w-full relative">
         <div className="absolute -top-10 -left-10 w-40 h-40 bg-brand-50 rounded-[62%_38%_51%_49%/42%_58%_42%_58%] -z-10" />
 
@@ -128,6 +129,8 @@ export default function Login() {
           </p>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 }

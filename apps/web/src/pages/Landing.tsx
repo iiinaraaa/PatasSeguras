@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, PawPrint, Dog, Cat, Heart, QrCode, ShieldCheck, MapPin } from "lucide-react";
 import { usePageTitle } from "../hooks/usePageTitle";
 import InstallButton from "../components/InstallButton";
+import Footer from "../components/Footer";
 
 export default function Landing() {
   usePageTitle("Página Inicial");
@@ -120,6 +121,8 @@ export default function Landing() {
           </p>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 }

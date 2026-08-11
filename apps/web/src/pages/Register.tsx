@@ -6,6 +6,7 @@ import { useToast } from "../context/ToastContext";
 import FieldError from "../components/FieldError";
 import { inputClass } from "../lib/formStyles";
 import { usePageTitle } from "../hooks/usePageTitle";
+import Footer from "../components/Footer";
 
 interface FieldErrors {
   fullName?: string;
@@ -77,7 +78,7 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-10 sm:py-12">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-10 sm:py-12">
       <div className="max-w-md w-full relative">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-orange-50 rounded-[55%_45%_35%_65%/45%_55%_45%_55%] -z-10" />
 
@@ -169,6 +170,8 @@ export default function Register() {
           </p>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 }
