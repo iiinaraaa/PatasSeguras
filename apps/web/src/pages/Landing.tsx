@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, PawPrint, Dog, Cat, Heart, QrCode, ShieldCheck, MapPin } from "lucide-react";
 import { usePageTitle } from "../hooks/usePageTitle";
+import InstallButton from "../components/InstallButton";
 
 export default function Landing() {
   usePageTitle("Página Inicial");
@@ -39,7 +40,7 @@ export default function Landing() {
             Cadastre seus animais, gere um QR Code exclusivo e ajude tutores, ONGs e
             protetores a manter cada bichinho seguro e identificável.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
             <Link to="/cadastro" className="w-full sm:w-auto">
               <button className="w-full sm:w-auto justify-center px-6 h-12 rounded-full font-medium bg-brand-600 text-white flex items-center gap-2 hover:bg-brand-800 transition cursor-pointer">
                 <ArrowRight size={17} />
@@ -49,6 +50,7 @@ export default function Landing() {
             <button className="w-full sm:w-auto px-6 h-12 rounded-full font-medium border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
               Como funciona
             </button>
+            <InstallButton className="w-full sm:w-auto h-12" />
           </div>
         </div>
 
