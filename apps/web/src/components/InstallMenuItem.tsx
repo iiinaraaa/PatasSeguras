@@ -3,13 +3,14 @@ import { Download } from "lucide-react";
 import { useInstallPrompt } from "../hooks/useInstallPrompt";
 import InstallInstructionsModal from "./InstallInstructionsModal";
 
-export default function InstallButton({ className = "" }: { className?: string }) {
+export default function InstallMenuItem({ onNavigate }: { onNavigate?: () => void }) {
   const { isStandalone, platform, canPromptNatively, promptInstall } = useInstallPrompt();
   const [showModal, setShowModal] = useState(false);
 
   if (isStandalone) return null;
 
   async function handleClick() {
+    onNavigate?.();
     if (canPromptNatively) {
       const outcome = await promptInstall();
       if (outcome === "unavailable") setShowModal(true);
@@ -22,10 +23,10 @@ export default function InstallButton({ className = "" }: { className?: string }
     <>
       <button
         onClick={handleClick}
-        className={`flex items-center justify-center gap-2 px-5 h-11 rounded-full font-medium bg-brand-600 text-white hover:bg-brand-800 transition cursor-pointer ${className}`}
+        className="flex items-center gap-2.5 px-3 py-3 md:py-2.5 rounded-xl text-sm text-gray-600 hover:bg-gray-50 cursor-pointer text-left"
       >
-        <Download size={16} />
-        Instalar app
+        <Download size={17} />
+        Instalar App
       </button>
 
       {showModal && (

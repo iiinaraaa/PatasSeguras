@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Home, PawPrint, Plus, User, LogOut, Menu, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import LoadingState from "./LoadingState";
+import InstallMenuItem from "./InstallMenuItem";
 
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: Home, end: true },
@@ -72,6 +73,8 @@ export default function DashboardLayout() {
               {label}
             </NavLink>
           ))}
+
+          <InstallMenuItem onNavigate={() => setMobileOpen(false)} />
 
           <button
             onClick={handleLogout}
