@@ -4,6 +4,11 @@ import { Dog, Cat, PawPrint, Phone, MessageCircle, Mail, AtSign, MapPin, PawPrin
 import { getPublicPet, type PublicPet as PublicPetType } from "../lib/pets";
 import { usePageTitle } from "../hooks/usePageTitle";
 import Footer from "../components/Footer";
+import pet2 from "../assets/pets/pet-2.jpg";
+import pet4 from "../assets/pets/pet-4.jpg";
+import dog1 from "../assets/pets/dog-1.png";
+import dog3 from "../assets/pets/dog-3.png";
+import dog5 from "../assets/pets/dog-5.png";
 
 const speciesIcon = { DOG: Dog, CAT: Cat, OTHER: PawPrint };
 const speciesLabel = { DOG: "Cachorro", CAT: "Gato", OTHER: "Outro" };
@@ -52,7 +57,16 @@ export default function PublicPet() {
   ].filter((group) => group.items.length > 0);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6 py-10">
+    <div className="relative overflow-hidden min-h-screen bg-gray-50 flex items-center justify-center px-6 py-10">
+      <div className="absolute top-[6%] left-[3%] w-24 h-24 sm:w-32 sm:h-32 bg-brand-100 opacity-70 rounded-[70%_30%_50%_50%/40%_60%_40%_60%] -z-10" />
+      <div className="absolute bottom-[8%] right-[-4%] w-32 h-32 sm:w-40 sm:h-40 bg-orange-50 opacity-70 rounded-[35%_65%_60%_40%/55%_45%_65%_35%] -z-10" />
+
+      <img src={dog1} alt="" aria-hidden="true" className="absolute top-[10%] right-[4%] w-16 h-16 sm:w-24 sm:h-24 object-cover opacity-30 rounded-[45%_55%_65%_35%/35%_65%_45%_55%] shadow-md -z-10 animate-float-slow" />
+      <img src={pet2} alt="" aria-hidden="true" className="absolute bottom-[14%] left-[2%] w-16 h-16 sm:w-20 sm:h-20 object-cover opacity-30 rounded-[55%_45%_40%_60%/60%_40%_55%_45%] shadow-md -z-10 animate-fade-in [animation-delay:250ms]" />
+      <img src={dog3} alt="" aria-hidden="true" className="hidden sm:block absolute top-[45%] left-[-4%] w-24 h-24 object-cover opacity-30 rounded-[60%_40%_30%_70%/65%_35%_60%_40%] shadow-md -z-10 animate-float-slow [animation-delay:400ms]" />
+      <img src={pet4} alt="" aria-hidden="true" className="hidden sm:block absolute top-[40%] right-[-3%] w-20 h-20 object-cover opacity-30 rounded-[45%_55%_65%_35%/35%_65%_45%_55%] shadow-md -z-10 animate-fade-in [animation-delay:150ms]" />
+      <img src={dog5} alt="" aria-hidden="true" className="hidden sm:block absolute bottom-[4%] left-[45%] w-16 h-16 object-cover opacity-30 rounded-[58%_42%_38%_62%/45%_55%_42%_58%] shadow-md -z-10 animate-float-slow [animation-delay:600ms]" />
+
       <div className="max-w-sm w-full">
         <div className="bg-brand-600 text-white rounded-2xl px-4 py-3 mb-4 text-sm font-medium text-center flex items-center justify-center gap-2">
           <PawPrint size={18} />

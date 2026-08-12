@@ -53,17 +53,21 @@ export default function Login() {
 
   return (
     <div className="relative overflow-hidden min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-10 sm:py-12">
+      <div className="absolute top-[4%] right-[3%] w-24 h-24 sm:w-32 sm:h-32 bg-brand-50 opacity-70 rounded-[70%_30%_50%_50%/40%_60%_40%_60%] -z-10" />
+      <div className="absolute bottom-[6%] right-[-4%] w-36 h-36 sm:w-44 sm:h-44 bg-orange-50 opacity-70 rounded-[35%_65%_60%_40%/55%_45%_65%_35%] -z-10" />
+      <div className="absolute top-[42%] left-[-6%] w-24 h-24 sm:w-32 sm:h-32 bg-brand-50 opacity-70 rounded-[60%_40%_30%_70%/65%_35%_60%_40%] -z-10" />
+
       <img
         src={pet3}
         alt=""
         aria-hidden="true"
-        className="hidden sm:block absolute top-[8%] right-[6%] w-20 h-20 md:w-24 md:h-24 object-cover rounded-[60%_40%_55%_45%/55%_45%_60%_40%] shadow-md animate-float-slow"
+        className="absolute top-[10%] right-[4%] w-20 h-20 sm:w-28 sm:h-28 object-cover opacity-30 rounded-[45%_55%_65%_35%/35%_65%_45%_55%] shadow-md -z-10 animate-float-slow"
       />
       <img
         src={dog2}
         alt=""
         aria-hidden="true"
-        className="hidden sm:block absolute bottom-[10%] left-[6%] w-16 h-16 md:w-20 md:h-20 object-cover rounded-[45%_55%_60%_40%/55%_45%_55%_45%] shadow-md animate-fade-in [animation-delay:300ms]"
+        className="absolute bottom-[12%] left-[3%] w-16 h-16 sm:w-24 sm:h-24 object-cover opacity-30 rounded-[55%_45%_40%_60%/60%_40%_55%_45%] shadow-md -z-10 animate-fade-in [animation-delay:300ms]"
       />
 
       <div className="max-w-md w-full relative">
