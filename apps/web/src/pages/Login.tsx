@@ -6,6 +6,8 @@ import FieldError from "../components/FieldError";
 import { inputClass } from "../lib/formStyles";
 import { usePageTitle } from "../hooks/usePageTitle";
 import Footer from "../components/Footer";
+import pet3 from "../assets/pets/pet-3.png";
+import dog2 from "../assets/pets/dog-2.png";
 
 interface FieldErrors {
   email?: string;
@@ -50,7 +52,20 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-10 sm:py-12">
+    <div className="relative overflow-hidden min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-10 sm:py-12">
+      <img
+        src={pet3}
+        alt=""
+        aria-hidden="true"
+        className="hidden sm:block absolute top-[8%] right-[6%] w-20 h-20 md:w-24 md:h-24 object-cover rounded-[60%_40%_55%_45%/55%_45%_60%_40%] shadow-md animate-float-slow"
+      />
+      <img
+        src={dog2}
+        alt=""
+        aria-hidden="true"
+        className="hidden sm:block absolute bottom-[10%] left-[6%] w-16 h-16 md:w-20 md:h-20 object-cover rounded-[45%_55%_60%_40%/55%_45%_55%_45%] shadow-md animate-fade-in [animation-delay:300ms]"
+      />
+
       <div className="max-w-md w-full relative">
         <div className="absolute -top-10 -left-10 w-40 h-40 bg-brand-50 rounded-[62%_38%_51%_49%/42%_58%_42%_58%] -z-10" />
 

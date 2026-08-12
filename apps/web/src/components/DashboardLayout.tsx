@@ -104,7 +104,11 @@ export default function DashboardLayout() {
         <div className="w-11" aria-hidden="true" />
       </header>
 
-      <main className="p-4 sm:p-6 md:p-8 flex flex-col min-h-screen md:min-h-0">
+      <main className="relative overflow-hidden p-4 sm:p-6 md:p-8 flex flex-col min-h-screen md:min-h-0">
+        <div
+          className="absolute -top-16 -right-16 w-64 h-64 bg-brand-50 rounded-[62%_38%_51%_49%/42%_58%_42%_58%] -z-10"
+          aria-hidden="true"
+        />
         <div className="flex-1">
           {loading ? <LoadingState label="Carregando sua conta..." /> : <Outlet />}
         </div>

@@ -1,8 +1,27 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, PawPrint, Dog, Cat, Heart, QrCode, ShieldCheck, MapPin } from "lucide-react";
+import { ArrowRight, PawPrint, Dog, Cat, Heart, QrCode, ShieldCheck, Phone } from "lucide-react";
 import { usePageTitle } from "../hooks/usePageTitle";
 import InstallButton from "../components/InstallButton";
 import Footer from "../components/Footer";
+import pet1 from "../assets/pets/pet-1.jpg";
+import pet2 from "../assets/pets/pet-2.jpg";
+import pet3 from "../assets/pets/pet-3.png";
+import pet4 from "../assets/pets/pet-4.jpg";
+import pet5 from "../assets/pets/pet-5.jpg";
+import dog1 from "../assets/pets/dog-1.png";
+import dog2 from "../assets/pets/dog-2.png";
+import dog3 from "../assets/pets/dog-3.png";
+import dog4 from "../assets/pets/dog-4.png";
+import dog5 from "../assets/pets/dog-5.png";
+
+const blobShapes = [
+  "rounded-[55%_45%_35%_65%/45%_55%_45%_55%]",
+  "rounded-[60%_40%_55%_45%/55%_45%_60%_40%]",
+  "rounded-[45%_55%_60%_40%/55%_45%_55%_45%]",
+  "rounded-[58%_42%_38%_62%/45%_55%_42%_58%]",
+];
+
+const galleryPhotos = [pet1, dog1, pet2, dog2, pet3, dog3, pet4, dog4, pet5, dog5];
 
 export default function Landing() {
   usePageTitle("Página Inicial");
@@ -38,8 +57,9 @@ export default function Landing() {
             Cada pet merece um caminho de volta para casa
           </h1>
           <p className="text-gray-600 text-base leading-relaxed mb-7">
-            Cadastre seus animais, gere um QR Code exclusivo e ajude tutores, ONGs e
-            protetores a manter cada bichinho seguro e identificável.
+            Cadastre seu pet, gere um QR Code exclusivo, e ajude a reunir animais
+            perdidos com seus tutores — para tutores, ONGs e qualquer pessoa que
+            queira ajudar.
           </p>
           <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
             <Link to="/cadastro" className="w-full sm:w-auto">
@@ -55,7 +75,7 @@ export default function Landing() {
           </div>
         </div>
 
-        <div className="relative min-h-[280px]">
+        <div className="relative min-h-[280px] overflow-hidden">
           <div className="absolute -top-8 -right-5 w-52 h-52 bg-brand-50 rounded-[62%_38%_51%_49%/42%_58%_42%_58%] z-0" />
 
           <div className="relative grid grid-cols-2 gap-3.5 z-10">
@@ -92,6 +112,21 @@ export default function Landing() {
         </div>
       </div>
 
+      <div className="hidden sm:flex flex-wrap justify-center items-center gap-4 sm:gap-5 mb-10 sm:mb-14 overflow-hidden">
+        {galleryPhotos.map((src, i) => (
+          <img
+            key={src}
+            src={src}
+            alt=""
+            aria-hidden="true"
+            className={`w-16 h-16 sm:w-20 sm:h-20 object-cover shadow-sm ${blobShapes[i % blobShapes.length]} ${
+              i % 2 === 0 ? "animate-float-slow" : "animate-fade-in"
+            }`}
+            style={{ animationDelay: `${i * 150}ms` }}
+          />
+        ))}
+      </div>
+
       <div className="grid md:grid-cols-3 gap-5 pt-10 border-t border-gray-200">
         <div>
           <div className="w-11 h-11 rounded-[60%_40%_50%_50%/50%_60%_40%_50%] bg-brand-50 flex items-center justify-center mb-3">
@@ -99,7 +134,7 @@ export default function Landing() {
           </div>
           <p className="font-medium text-base mb-1">QR Code exclusivo</p>
           <p className="text-sm text-gray-600 leading-relaxed">
-            Cada pet tem um código próprio, sem expor dados sensíveis.
+            Cada pet tem um código próprio, fácil de gerar e de escanear.
           </p>
         </div>
         <div>
@@ -113,11 +148,12 @@ export default function Landing() {
         </div>
         <div>
           <div className="w-11 h-11 rounded-[55%_45%_40%_60%/40%_55%_45%_60%] bg-brand-50 flex items-center justify-center mb-3">
-            <MapPin size={20} className="text-brand-800" />
+            <Phone size={20} className="text-brand-800" />
           </div>
-          <p className="font-medium text-base mb-1">Pet perdido</p>
+          <p className="font-medium text-base mb-1">Contato direto com o tutor</p>
           <p className="text-sm text-gray-600 leading-relaxed">
-            Ative um alerta em segundos e aumente as chances de reencontro.
+            Quem encontrar seu pet escaneia o QR Code e já vê como falar com você, na
+            hora.
           </p>
         </div>
       </div>
