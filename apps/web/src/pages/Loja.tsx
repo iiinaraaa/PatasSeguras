@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { ChevronLeft, ChevronRight, ExternalLink, Package, Bone, CircleDot, Sparkles, Droplet, Ticket } from "lucide-react";
 import { produtosLoja, CUPOM_DESCONTO } from "../lib/lojaProdutos";
 import { getRandomDogPhoto, getRandomCatPhoto } from "../lib/petPhotos";
@@ -12,6 +12,11 @@ export default function Loja() {
   const trilhoRef = useRef<HTMLDivElement>(null);
   const [fotos, setFotos] = useState<(string | null)[]>([]);
   const [loadingFotos, setLoadingFotos] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const arrastando = useRef(false);
+  const inicioX = useRef(0);
+  const inicioScroll = useRef(0);
 
   useEffect(() => {
     let cancelado = false;
@@ -34,11 +39,64 @@ export default function Loja() {
     };
   }, []);
 
+  useEffect(() => {
+    const el = trilhoRef.current;
+    if (!el) return;
+
+    function atualizarIndiceAtivo() {
+      if (!el) return;
+      const cards = Array.from(el.children) as HTMLElement[];
+      let maisProximo = 0;
+      let menorDistancia = Infinity;
+      cards.forEach((card, i) => {
+        const distancia = Math.abs(card.offsetLeft - el.scrollLeft);
+        if (distancia < menorDistancia) {
+          menorDistancia = distancia;
+          maisProximo = i;
+        }
+      });
+      setActiveIndex(maisProximo);
+    }
+
+    atualizarIndiceAtivo();
+    el.addEventListener("scroll", atualizarIndiceAtivo, { passive: true });
+    return () => el.removeEventListener("scroll", atualizarIndiceAtivo);
+  }, []);
+
   function scroll(direcao: "esquerda" | "direita") {
     const el = trilhoRef.current;
     if (!el) return;
-    const delta = direcao === "direita" ? el.clientWidth * 0.8 : -el.clientWidth * 0.8;
+    const delta = direcao === "direita" ? el.clientWidth * 0.9 : -el.clientWidth * 0.9;
     el.scrollBy({ left: delta, behavior: "smooth" });
+  }
+
+  function irParaCard(i: number) {
+    const el = trilhoRef.current;
+    const card = el?.children[i] as HTMLElement | undefined;
+    if (el && card) el.scrollTo({ left: card.offsetLeft, behavior: "smooth" });
+  }
+
+  function onPointerDown(e: ReactPointerEvent<HTMLDivElement>) {
+    if (e.pointerType !== "mouse") return;
+    const el = trilhoRef.current;
+    if (!el) return;
+    arrastando.current = true;
+    inicioX.current = e.clientX;
+    inicioScroll.current = el.scrollLeft;
+    el.setPointerCapture(e.pointerId);
+  }
+
+  function onPointerMove(e: ReactPointerEvent<HTMLDivElement>) {
+    if (!arrastando.current) return;
+    const el = trilhoRef.current;
+    if (!el) return;
+    el.scrollLeft = inicioScroll.current - (e.clientX - inicioX.current);
+  }
+
+  function onPointerUp(e: ReactPointerEvent<HTMLDivElement>) {
+    arrastando.current = false;
+    const el = trilhoRef.current;
+    if (el && el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
   }
 
   return (
@@ -74,7 +132,11 @@ export default function Loja() {
 
       <div
         ref={trilhoRef}
-        className="flex flex-col gap-4 sm:flex-row sm:overflow-x-auto sm:snap-x sm:snap-mandatory sm:scroll-smooth sm:pb-2"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        className="no-scrollbar flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 cursor-grab active:cursor-grabbing select-none"
       >
         {produtosLoja.map((produto, i) => {
           const Icon = icones[produto.imagem] ?? Package;
@@ -82,13 +144,13 @@ export default function Loja() {
           return (
             <div
               key={i}
-              className="sm:snap-start shrink-0 w-full sm:w-56 md:w-64 bg-white border border-gray-200 rounded-2xl p-4 hover:border-gray-300 transition flex flex-col"
+              className="snap-start shrink-0 w-[90%] sm:w-[47%] md:w-[31%] lg:w-[23%] bg-white border border-gray-200 rounded-2xl p-4 hover:border-gray-300 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 flex flex-col"
             >
               <div className="w-full h-32 rounded-xl bg-brand-50 flex items-center justify-center mb-3 overflow-hidden">
                 {loadingFotos ? (
                   <Spinner size={22} />
                 ) : foto ? (
-                  <img src={foto} alt={produto.nome} className="w-full h-full object-cover" />
+                  <img src={foto} alt={produto.nome} className="w-full h-full object-cover pointer-events-none" draggable={false} />
                 ) : (
                   <Icon size={40} className="text-brand-800" />
                 )}
@@ -114,6 +176,19 @@ export default function Loja() {
             </div>
           );
         })}
+      </div>
+
+      <div className="flex justify-center items-center gap-1.5 mt-4">
+        {produtosLoja.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => irParaCard(i)}
+            aria-label={`Ir para produto ${i + 1}`}
+            className={`h-2 rounded-full transition-all cursor-pointer ${
+              i === activeIndex ? "bg-brand-600 w-6" : "bg-gray-200 w-2 hover:bg-gray-300"
+            }`}
+          />
+        ))}
       </div>
     </div>
   );
