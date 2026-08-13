@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Home, PawPrint, Plus, User, LogOut, Menu, X } from "lucide-react";
+import { Home, PawPrint, Plus, User, LogOut, Menu, X, ShoppingBag } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import LoadingState from "./LoadingState";
 import InstallMenuItem from "./InstallMenuItem";
@@ -10,6 +10,7 @@ const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: Home, end: true },
   { to: "/dashboard/pets", label: "Meus Pets", icon: PawPrint, end: false },
   { to: "/dashboard/pets/novo", label: "Cadastrar Pet", icon: Plus, end: false },
+  { to: "/dashboard/loja", label: "Loja", icon: ShoppingBag, end: false },
   { to: "/dashboard/conta", label: "Minha Conta", icon: User, end: false },
 ];
 
