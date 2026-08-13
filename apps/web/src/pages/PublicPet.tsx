@@ -57,7 +57,7 @@ export default function PublicPet() {
   ].filter((group) => group.items.length > 0);
 
   return (
-    <div className="relative overflow-hidden min-h-screen bg-gray-50 flex items-center justify-center px-6 py-10">
+    <div className="relative overflow-hidden min-h-screen bg-gray-50 flex flex-col items-center justify-center px-6 py-10">
       <div className="absolute top-[6%] left-[3%] w-24 h-24 sm:w-32 sm:h-32 bg-brand-100 opacity-70 rounded-[70%_30%_50%_50%/40%_60%_40%_60%] -z-10" />
       <div className="absolute bottom-[8%] right-[-4%] w-32 h-32 sm:w-40 sm:h-40 bg-orange-50 opacity-70 rounded-[35%_65%_60%_40%/55%_45%_65%_35%] -z-10" />
 
